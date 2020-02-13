@@ -30,10 +30,8 @@ class DeepSearchAgent(SearchAgent):
         return max_val + self.evaluationFunction(gameState) - depth * 100
 
     def getAction(self, gameState):
-        """
-        Returns the minimax action from the current gameState using self.depth
-        and self.evaluationFunction.
-        """
+
+        # as the food begins running out it is better to decrease the research depth, in an empty maze there is not too much to search
         if gameState.getNumFood() <= self.depth:
             self.depth = gameState.getNumFood() - 1
         possibleActions = getLegalActionsNoStop(0, gameState)
@@ -55,7 +53,6 @@ class DeepSearchAgent(SearchAgent):
 
 
 def evaluationFunction(currentGameState):
-
 
     newPos = currentGameState.getPacmanPosition()
     newFood = currentGameState.getFood()

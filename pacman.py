@@ -513,7 +513,7 @@ def readCommand(argv):
                 (2) python pacman.py --layout smallClassic --zoom 2
                 OR  python pacman.py -l smallClassic -z 2
                 OR  python pacman.py -l originalClassic -z 0.8 -p ReflexAgent -n 5
-                OR  python pacman.py -l smallClassic -p DQNAgent -n 5100 -x 5000 -q
+                OR  python pacman.py -l smallClassic -p DQNAgent -n 10001 -x 10000 -q
     """
     parser = OptionParser(usageStr)
 

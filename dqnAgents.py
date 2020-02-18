@@ -28,7 +28,7 @@ from DQN import *
 # only params value can be modified
 params = {
     # Model backups
-    'load_file': None,  # relative path to the saved model
+    'load_file': "model-smallClassic_784471_5703",  # relative path to the saved model
     'save_file': "smallClassic",  # name of the model
     'save_interval': 100000,  # Number of steps between each checkpoint
 
@@ -57,19 +57,23 @@ class DQNAgent(game.Agent):
         self.params['num_training'] = numTraining  # Number of games used for training
 
         # create saves and logs directory
-        if not os.path.exists("save/"):
-            os.makedirs("save/")
+        if not os.path.exists("saves/DQN/"):
+            os.makedirs("saves/DQN/")
         if not os.path.exists("logs/"):
             os.makedirs("logs/")
 
+        # get saves directory
+        if params["load_file"] is not None and not params["load_file"].startswith("saves/DQN/"):
+            params["load_file"] = "saves/DQN/" + params["load_file"]
+
         # Start Tensorflow session
-        gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=0.1)
+        gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=0.5)
         self.sess = tf.Session(config=tf.ConfigProto(gpu_options=gpu_options))
         self.qnet = DQN(self.params)  # create DQN
 
         # time started
         self.general_record_time = time.strftime("%a_%d_%b_%Y_%H_%M_%S", time.localtime())
-        self.Q_global = []  # max Q-value for each state
+        self.Q_global = []  # max Q-values in the current game
         self.cost_disp = 0   # current loss
 
         self.cnt = self.qnet.sess.run(self.qnet.global_step)  # number of steps the model has been trained so far
@@ -180,7 +184,7 @@ class DQNAgent(game.Agent):
             # Save model
             if params['save_file']:
                 if self.local_cnt > self.params['train_start'] and self.local_cnt % self.params['save_interval'] == 0:
-                    self.qnet.save_ckpt('saves/model-' + params['save_file'] + "_" + str(self.cnt) + '_' + str(self.numeps))
+                    self.qnet.save_ckpt('saves/DQN/model-' + params['save_file'] + "_" + str(self.cnt) + '_' + str(self.numeps))
                     print('Model saved')
 
             # Train

@@ -513,7 +513,7 @@ def readCommand(argv):
                 (2) python pacman.py --layout smallClassic --zoom 2
                 OR  python pacman.py -l smallClassic -z 2
                 OR  python pacman.py -l originalClassic -z 0.8 -p ReflexAgent -n 5
-                    - starts an interactive game on a smaller board, zoomed in
+                OR  python pacman.py -l smallClassic -p DQNAgent -n 5100 -x 5000 -q
     """
     parser = OptionParser(usageStr)
 
@@ -575,6 +575,12 @@ def readCommand(argv):
         options.textGraphics or options.quietGraphics)
     pacmanType = loadAgent(options.pacman, noKeyboard)
     agentOpts = parseAgentArgs(options.agentArgs)
+
+    # these 3 lines added by me
+    if options.pacman.startswith("DQN"):
+        agentOpts['width'] = layout.getLayout(options.layout).width
+        agentOpts['height'] = layout.getLayout(options.layout).height
+
     if options.numTraining > 0:
         args['numTraining'] = options.numTraining
         if 'numTraining' not in agentOpts:

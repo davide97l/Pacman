@@ -69,9 +69,11 @@ class DQN:
     def train(self,bat_s,bat_a,bat_t,bat_n,bat_r):
         feed_dict={self.x: bat_n, self.q_t: np.zeros(bat_n.shape[0]),
                    self.actions: bat_a, self.terminals: bat_t, self.rewards: bat_r}
+        # get Q-value of the next state
         q_t = self.sess.run(self.y, feed_dict=feed_dict)
         q_t = np.amax(q_t, axis=1)
         feed_dict={self.x: bat_s, self.q_t: q_t, self.actions: bat_a, self.terminals: bat_t, self.rewards: bat_r}
+        # make one training step
         _,cnt,cost = self.sess.run([self.optim, self.global_step,self.cost],feed_dict=feed_dict)
         return cnt, cost
 

@@ -28,7 +28,7 @@ from DQN import *
 # only params value can be modified
 params = {
     # Model backups
-    'load_file': "model-smallClassic_784471_5703",  # relative path to the saved model
+    'load_file': None,  # relative path to the saved model
     'save_file': "smallClassic",  # name of the model
     'save_interval': 100000,  # Number of steps between each checkpoint
 
@@ -106,7 +106,7 @@ class DQNAgent(game.Agent):
     def getMove(self):
 
         # Exploit / Explore
-        if np.random.rand() > self.params['eps']:
+        if np.random.rand() >= self.params['eps']:
             # Exploit action
             self.Q_pred = self.qnet.sess.run(
                 self.qnet.y,
@@ -195,6 +195,8 @@ class DQNAgent(game.Agent):
         self.frame += 1
         self.params['eps'] = max(self.params['eps_final'],
                                  1.00 - float(self.cnt) / float(self.params['eps_step']))
+        if self.numeps >= params['num_training']:
+            params['eps'] = 0
 
     # Do an observation after each step (this method is called in the game.py file after each step)
     def observationFunction(self, state):
@@ -378,16 +380,15 @@ class DQNAgent(game.Agent):
         self.frame = 0
         self.numeps += 1
 
-        if self.numeps >params['num_training']:
+        if self.numeps >= params['num_training']:
             params['eps'] = 0
 
     # Returns an action from the agent (this method is called in the game.py file when the agent has to select an action)
     def getAction(self, state):
         move = self.getMove()
-
         # Stop moving when not legal
         legal = state.getLegalActions(0)
         if move not in legal:
-            move = Directions.STOP
+            move = random.choice(legal)
 
         return move

@@ -28,7 +28,7 @@ from DQN import *
 # only params value can be modified
 params = {
     # Model backups
-    'load_file': None,  # relative path to the saved model
+    'load_file': "model-trcikyClassic_585898_9422",  # relative path to the saved model
     'save_file': "smallClassic",  # name of the model
     'save_interval': 100000,  # Number of steps between each checkpoint
 
